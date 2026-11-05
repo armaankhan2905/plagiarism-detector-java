@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plagiarism Detector - Word Frequency</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="hero">
+    <div class="container">
+      <h1>Plagiarism Detector</h1>
+      <p>Compare two or more documents using word frequency, shared vocabulary and common phrases.</p>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ================= STEP 1: ADD DOCUMENTS ================= -->
+    <section class="card" id="inputSection">
+      <h2><span class="step">1</span> Add documents</h2>
+
+      <!-- Drag & drop area. The real file input is hidden; the "browse" button opens it. -->
+      <div id="dropZone" class="drop-zone">
+        <input type="file" id="fileInput" accept=".txt" multiple hidden>
+        <p class="drop-title">Drop <strong>.txt</strong> files here or <button type="button" id="browseBtn" class="link-btn">browse</button></p>
+        <p class="hint">2 to 10 documents &middot; max 1 MB each</p>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" id="pasteToggleBtn" class="btn secondary">+ Paste text</button>
+        <button type="button" id="sampleBtn" class="btn secondary">Load sample documents</button>
+      </div>
+
+      <!-- Hidden until "+ Paste text" is clicked -->
+      <div id="pasteBox" class="paste-box hidden">
+        <input type="text" id="pasteName" placeholder="Document name (e.g. essay.txt)">
+        <textarea id="pasteText" placeholder="Paste the document text here..."></textarea>
+        <button type="button" id="addPasteBtn" class="btn primary small">Add document</button>
+      </div>
+
+      <ul id="docList" class="doc-list"></ul>
+      <p id="message" class="message"></p>
+
+      <div class="compare-row">
+        <button type="button" id="compareBtn" class="btn primary" disabled>Compare documents</button>
+        <button type="button" id="clearBtn" class="btn ghost">Clear all</button>
+      </div>
+    </section>
+
+    <!-- ================= STEP 2: RESULTS (hidden until a comparison is done) ================= -->
+    <div id="results" class="hidden">
+
+      <section class="card">
+        <h2><span class="step">2</span> Summary</h2>
+        <div id="summaryCards" class="summary-grid"></div>
+        <div id="downloadRow" class="download-row"></div>
+      </section>
+
+      <section class="card">
+        <h2>Similarity matrix</h2>
+        <p class="hint">Overall similarity between every pair of documents. Greener means more original, redder means more similar.</p>
+        <div id="matrix" class="table-wrap"></div>
+      </section>
+
+      <section class="card">
+        <h2>Pair-by-pair comparison</h2>
+        <p class="hint">Most similar pair first. Click <b>Highlight copied text</b> to see the common phrases inside both documents.</p>
+        <div id="pairs"></div>
+      </section>
+
+      <section class="card">
+        <h2>Most frequent words per document</h2>
+        <p class="hint">Stop words such as "the", "is" and "and" are ignored.</p>
+        <div id="topWords" class="top-words-grid"></div>
+      </section>
+
+      <section class="card">
+        <details>
+          <summary>Full text report</summary>
+          <pre id="reportText" class="report-text"></pre>
+        </details>
+      </section>
+    </div>
+
+    <!-- ================= HISTORY (always visible) ================= -->
+    <section class="card">
+      <h2>Recent comparisons</h2>
+      <p class="hint">Saved by the Java server in <code>reports/history.csv</code>, so they are kept after a restart.</p>
+      <div id="history" class="table-wrap"></div>
+    </section>
+  </main>
+
+  <footer>
+    Plagiarism Detection Using Word Frequency &middot; Java backend + HTML/CSS/JavaScript frontend
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

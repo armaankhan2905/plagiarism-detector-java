@@ -5,6 +5,9 @@ out/
 # Generated reports (Stage 3+)
 reports/
 
+# Claude Code preview settings (local only)
+.claude/
+
 # IDE / OS files
 .idea/
 .vscode/
