@@ -1,0 +1,13 @@
+# Compiled Java classes
+out/
+*.class
+
+# Generated reports (Stage 3+)
+reports/
+
+# IDE / OS files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

@@ -1,0 +1,6 @@
+Object oriented programming organises a program around objects instead of plain functions.
+Each object combines data, called fields, with behaviour, called methods.
+A class acts as a blueprint, and many objects can be created from the same class.
+Inheritance lets a new class reuse the code of an existing class, while polymorphism allows
+one method call to behave differently depending on the actual object. Encapsulation hides the
+internal details of an object and exposes only what other parts of the program really need.
