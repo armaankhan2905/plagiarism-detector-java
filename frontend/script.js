@@ -195,7 +195,7 @@
         </div>
       </section>
       <section class="band" data-reveal>
-        <div><h2>Ready to check your documents?</h2><p>No account, no upload to the internet. It all runs on your own Java server.</p></div>
+        <div><h2>Ready to check your documents?</h2></div>
         <a class="btn green" href="compare.html">Start a comparison ${ICON.arrow}</a>
       </section>`,
 
