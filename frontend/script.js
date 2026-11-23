@@ -50,13 +50,13 @@
         <div class="foot-in">
           <div class="foot-brand">
             <a class="brand" href="index.html"><span class="brand-ic">${ICON.logo}</span>Copyscope<span class="dot">.</span></a>
-            <p>Plagiarism detection using word frequency. A Java project with an HTML, CSS and JavaScript frontend.</p>
+            <p>Plagiarism detection using word frequency. A Java project.</p>
           </div>
           <div><h4>Product</h4><a href="compare.html">Compare documents</a><a href="results.html">Latest results</a><a href="history.html">History</a></div>
           <div><h4>Learn</h4><a href="method.html">How it works</a><a href="method.html#scale">Verdict scale</a><a href="method.html#measures">The three measures</a></div>
           <div><h4>Limits</h4><span>2 – 10 documents</span><span>.txt files, 1 MB each</span><span>Phrases of 4+ words</span></div>
         </div>
-        <div class="foot-base"><span>© Copyscope · Java project</span><span>Runs on localhost · your text never leaves this computer</span></div>
+        <div class="foot-base"><span>© Copyscope · Java project</span></div>
       </footer>`;
   }
 
@@ -111,7 +111,7 @@
     return `
       <section class="phead">
         <div class="phead-text" data-reveal>
-          <span class="pill">${kicker}</span>
+          ${kicker ? `<span class="pill">${kicker}</span>` : ""}
           <h1>${title}</h1>
           ${text ? `<p>${text}</p>` : ""}
         </div>
@@ -232,7 +232,7 @@
       <div id="out"></div>`,
 
     history: () => `
-      ${pageHead("Saved in this browser", "Comparison <em>history.</em>", "Every check is kept in your browser’s <code>localStorage</code>, so it stays after you close the tab. Nothing is stored on the server.")}
+      ${pageHead("", "Comparison <em>history.</em>", "")}
       <div id="out"></div>`,
 
     method: () => `
