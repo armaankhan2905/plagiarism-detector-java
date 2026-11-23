@@ -80,10 +80,6 @@ svg { display: block; }
 .nav nav a:hover { background: var(--cream); }
 .nav nav a.on { color: var(--orange-dark); background: var(--peach); }
 .nav-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
-.status { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
-.status i { width: 8px; height: 8px; border-radius: 50%; background: #c9c3bb; }
-.status.up i { background: #2fa866; box-shadow: 0 0 0 3px rgba(47,168,102,.2); }
-.status.down i { background: var(--high); }
 .burger { display: none; background: none; border: 0; width: 38px; height: 38px; cursor: pointer; }
 .burger i { display: block; height: 2px; background: var(--ink); margin: 7px 8px; border-radius: 2px; transition: transform .3s; }
 .open .burger i:first-child { transform: translateY(4.5px) rotate(45deg); }
@@ -327,7 +323,6 @@ table.history { width: 100%; border-collapse: collapse; font-size: 14px; }
 /* ---------------- small screens ---------------- */
 @media (max-width: 1000px) {
   .burger { display: block; }
-  .status { display: none; }
   .nav { flex-wrap: wrap; }
   .nav nav { order: 3; width: 100%; margin: 0; flex-direction: column; display: none; padding-top: 8px; }
   .open .nav nav { display: flex; }
