@@ -36,7 +36,6 @@
           <a class="brand" href="index.html"><span class="brand-ic">${ICON.logo}</span>Copyscope<span class="dot">.</span></a>
           <nav id="menu">${NAV.map(([href, id, label]) => `<a href="${href}" class="${id === page ? "on" : ""}">${label}</a>`).join("")}</nav>
           <div class="nav-right">
-            <span class="status" id="status"><i></i>Server</span>
             <a class="btn orange sm" href="compare.html">Start checking</a>
             <button class="burger" aria-label="Menu" onclick="document.body.classList.toggle('open')"><i></i><i></i></button>
           </div>
@@ -403,6 +402,4 @@
   if (page === "method") $$("[data-count]").forEach((el) => PD.countUp(el, Number(el.dataset.count)));
   PD.reveal();
 
-  // Small green/grey light in the header: is the Java server running?
-  fetch("/samples/original.txt", { method: "HEAD" }).then((r) => $("#status").classList.toggle("up", r.ok)).catch(() => $("#status").classList.add("down"));
 })();
