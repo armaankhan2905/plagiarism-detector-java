@@ -140,21 +140,6 @@ svg { display: block; }
 .qdoc button { border: 0; background: rgba(255,255,255,.7); width: 20px; height: 20px; border-radius: 50%; cursor: pointer; color: var(--orange-dark); line-height: 1; }
 @keyframes pop { from { opacity: 0; transform: scale(.85); } }
 
-/* ---------------- home: logo strip ---------------- */
-.strip { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 40px; max-width: 1200px; margin: 0 auto; padding: 40px 16px; border-bottom: 1px solid var(--line); }
-.strip-title { font: 600 22px/1.1 var(--serif); color: var(--ink); }
-.marks { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px 36px; }
-.marks span { display: flex; align-items: center; gap: 8px; font: 600 22px var(--sans); color: #55504a; filter: grayscale(1); opacity: .75; transition: opacity .3s, filter .3s, transform .3s; }
-.marks span:hover { opacity: 1; filter: none; transform: translateY(-2px); }
-.marks small { font: 500 11px var(--sans); text-transform: uppercase; letter-spacing: .08em; }
-.marks .m1 { font-family: var(--serif); }
-.marks .m2 b { font-family: ui-monospace, monospace; color: var(--orange); }
-.marks .m3 { font: italic 500 28px var(--serif); }
-.marks .m4 { flex-direction: column; gap: 0; line-height: 1; font-size: 17px; }
-.marks .m4 b { border-bottom: 2px solid currentColor; padding-bottom: 2px; }
-.marks .m4 small { font-size: 17px; font-weight: 600; text-transform: none; letter-spacing: 0; }
-.marks .m5 { font: italic 400 22px var(--serif); background: var(--ink); color: #fff; padding: 4px 12px; border-radius: 4px; }
-
 /* ---------------- home: sections ---------------- */
 .section { max-width: 1200px; margin: 0 auto; padding: 90px 16px 10px; }
 .sec-head { display: grid; justify-items: center; text-align: center; gap: 14px; margin-bottom: 44px; }
@@ -354,7 +339,6 @@ table.history { width: 100%; border-collapse: collapse; font-size: 14px; }
   .queue { position: static; }
   .features, .steps { grid-template-columns: 1fr; }
   .stats { grid-template-columns: 1fr 1fr; }
-  .strip { grid-template-columns: 1fr; gap: 20px; }
   .foot-in { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 680px) {
