@@ -172,16 +172,6 @@
           <div class="hero-card" data-reveal>${quickCard()}</div>
         </div>
       </section>
-      <section class="strip" data-reveal>
-        <div class="strip-title">Built on<br><em>solid maths</em></div>
-        <div class="marks">
-          <span class="m1">☕ Java<small>HttpServer</small></span>
-          <span class="m2"><b>{ }</b> HashMap</span>
-          <span class="m3">cos θ</span>
-          <span class="m4"><b>A∩B</b><small>A∪B</small></span>
-          <span class="m5">“4-word” phrases</span>
-        </div>
-      </section>
       <section class="section">
         <div class="sec-head" data-reveal><span class="pill">Three measures</span><h2>One number you can <em>explain.</em></h2></div>
         <div class="features">
