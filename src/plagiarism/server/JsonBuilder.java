@@ -5,7 +5,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import plagiarism.core.WordFrequencyCounter;
-import plagiarism.history.HistoryEntry;
 import plagiarism.model.ComparisonResult;
 import plagiarism.model.Document;
 
@@ -72,30 +71,6 @@ public class JsonBuilder {
         json.append("\"reportText\":").append(quote(reportText));
         json.append("}");
         return json.toString();
-    }
-
-    /**
-     * JSON for /api/history:
-     * { "history": [ { "date": ..., "reportName": ..., "documentCount": 3, ... }, ... ] }
-     */
-    public static String buildHistoryResponse(List<HistoryEntry> entries) {
-        StringBuilder json = new StringBuilder("{\"history\":[");
-        for (int i = 0; i < entries.size(); i++) {
-            HistoryEntry e = entries.get(i);
-            if (i > 0) {
-                json.append(",");
-            }
-            json.append("{")
-                .append("\"date\":").append(quote(e.getDate())).append(",")
-                .append("\"reportName\":").append(quote(e.getReportName())).append(",")
-                .append("\"documentCount\":").append(e.getDocumentCount()).append(",")
-                .append("\"documentNames\":").append(quote(e.getDocumentNames())).append(",")
-                .append("\"mostSimilarPair\":").append(quote(e.getMostSimilarPair())).append(",")
-                .append("\"highestSimilarity\":").append(number(e.getHighestSimilarity())).append(",")
-                .append("\"verdict\":").append(quote(e.getVerdict()))
-                .append("}");
-        }
-        return json.append("]}").toString();
     }
 
     // ------------------------------------------------------------------ parts

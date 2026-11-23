@@ -13,7 +13,6 @@ import plagiarism.core.SimilarityCalculator;
 import plagiarism.core.TextNormalizer;
 import plagiarism.core.WordFrequencyCounter;
 import plagiarism.exception.InvalidDocumentException;
-import plagiarism.history.HistoryEntry;
 import plagiarism.model.ComparisonResult;
 import plagiarism.model.Document;
 import plagiarism.server.JsonBuilder;
@@ -196,13 +195,6 @@ public class PlagiarismTests {
 
         check("JSON escaping of quotes and new lines",
                 JsonBuilder.quote("say \"hi\"\nnow").equals("\"say \\\"hi\\\"\\nnow\""));
-
-        HistoryEntry entry = new HistoryEntry("05-11-2026 10:00:00", "report_1", 2,
-                "a, b.txt | c.txt", "a vs c", 42.5, "MODERATE plagiarism");
-        HistoryEntry loaded = HistoryEntry.fromCsvLine(entry.toCsvLine());
-        check("history entry survives CSV save and load (comma in name handled)",
-                loaded.getDocumentCount() == 2 && almostEqual(loaded.getHighestSimilarity(), 42.5)
-                        && loaded.getDocumentNames().equals("a; b.txt | c.txt"));
     }
 
     // ------------------------------------------------------------ exception helper

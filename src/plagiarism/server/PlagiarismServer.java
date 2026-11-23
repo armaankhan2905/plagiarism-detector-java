@@ -20,7 +20,6 @@ import com.sun.net.httpserver.HttpServer;
  *   /samples        StaticFileHandler  (sends the sample .txt documents)
  *   /api/compare    CompareHandler     (POST documents, get results as JSON)
  *   /api/download   DownloadHandler    (download a saved .txt / .csv report)
- *   /api/history    HistoryHandler     (list of recent comparisons)
  *
  * MULTITHREADING: the server uses a pool of 4 threads, so up to 4 requests
  * can be handled at the SAME time (e.g. 4 students checking documents together).
@@ -64,7 +63,6 @@ public class PlagiarismServer {
             server.createContext("/samples", new StaticFileHandler("sample-docs", "/samples"));
             server.createContext("/api/compare", new CompareHandler());
             server.createContext("/api/download", new DownloadHandler());
-            server.createContext("/api/history", new HistoryHandler());
 
             ExecutorService threadPool = Executors.newFixedThreadPool(THREAD_COUNT);
             server.setExecutor(threadPool);
