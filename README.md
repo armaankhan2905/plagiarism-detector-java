@@ -29,7 +29,7 @@ syllabus mapping, likely viva questions and a demo script.
 - Similarity matrix of every document against every other
 - Side-by-side view with copied text highlighted
 - Report saved as `.txt` and `.csv` and downloadable from the page
-- History of past comparisons saved in `reports/history.csv`
+- History of past comparisons saved in the browser's `localStorage` (no server storage)
 - Input validation with clear error messages; multithreaded server
 
 ## Stages
@@ -58,12 +58,9 @@ src/plagiarism/
     core/PlagiarismChecker.java               compares every pair, builds the similarity matrix
     report/ReportGenerator.java               builds the full text report (StringBuilder, Stream API)
     report/ReportWriter.java                  saves .txt and .csv reports (FileWriter, BufferedWriter)
-    history/HistoryEntry.java                 one past comparison, saved as a CSV line
-    history/HistoryManager.java               reads/writes reports/history.csv (synchronized)
     server/PlagiarismServer.java              starts the web server (main method, thread pool)
     server/CompareHandler.java                POST /api/compare  -> compare documents, answer JSON
     server/DownloadHandler.java               GET  /api/download -> download a saved report
-    server/HistoryHandler.java                GET  /api/history  -> recent comparisons
     server/StaticFileHandler.java             GET  / and /samples -> sends frontend files and sample documents
     server/RequestParser.java                 splits the uploaded text into documents
     server/JsonBuilder.java                   turns results into JSON for the browser
@@ -71,13 +68,15 @@ src/plagiarism/
     app/Stage1Demo.java                       console demo for Stage 1
     app/Stage2Demo.java                       console demo for Stage 2
     app/Stage3Demo.java                       full pipeline in the console: compare + save reports
-    test/PlagiarismTests.java                 36 automated tests (test evidence)
-frontend/index.html                           page layout
-frontend/style.css                            colours, cards, bars, matrix
-frontend/script.js                            adds documents, calls the Java API, draws the results
+    test/PlagiarismTests.java                 35 automated tests (test evidence)
+frontend/index.html, compare.html, results.html, history.html, method.html   the 5 pages
+frontend/style.css                            design of every page
+frontend/script.js                            builds each page and connects the buttons
+frontend/shared/core.js                       calls the Java API; keeps history in localStorage
+frontend/templates/                           5 alternative designs (same features)
 sample-docs/                                  three short test documents
 test-docs/                                    two long documents (partly copied essay)
-reports/                                      generated reports and history.csv (not in git)
+reports/                                      generated .txt / .csv reports (not in git)
 ```
 
 ## How the browser and Java talk
@@ -89,13 +88,14 @@ POST /api/compare                  --->   CompareHandler
   ===DOCUMENT: a.txt                        RequestParser     -> List<Document>
   text of a ...                             PlagiarismChecker -> results + matrix
   ===DOCUMENT: b.txt                        ReportGenerator / ReportWriter -> saves report
-  text of b ...                             HistoryManager    -> adds a line to history.csv
+  text of b ...
                                             JsonBuilder       -> JSON
                                    <---   200 OK  { "results": [...], "matrix": [...], ... }
 
 GET /api/download?name=report_...csv  --> DownloadHandler -> sends the file
-GET /api/history                      --> HistoryHandler  -> recent comparisons as JSON
 ```
+
+History never reaches Java: after a comparison the browser saves a summary in `localStorage` (key `pd.history`).
 
 Errors come back as JSON with a status code, e.g. `400 {"error":"At least 2 documents are needed, but got 1"}`.
 The page itself does no plagiarism calculations; all of that is done by the Java backend.

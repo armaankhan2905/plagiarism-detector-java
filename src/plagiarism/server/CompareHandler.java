@@ -8,8 +8,6 @@ import com.sun.net.httpserver.HttpHandler;
 
 import plagiarism.core.PlagiarismChecker;
 import plagiarism.exception.InvalidDocumentException;
-import plagiarism.history.HistoryEntry;
-import plagiarism.history.HistoryManager;
 import plagiarism.model.ComparisonResult;
 import plagiarism.model.Document;
 import plagiarism.report.ReportGenerator;
@@ -22,8 +20,10 @@ import plagiarism.report.ReportWriter;
  *   1. read the documents sent by the browser   (RequestParser)
  *   2. compare them                             (PlagiarismChecker)
  *   3. build and save the report                (ReportGenerator, ReportWriter)
- *   4. add a line to the history                (HistoryManager)
- *   5. send everything back as JSON             (JsonBuilder)
+ *   4. send everything back as JSON             (JsonBuilder)
+ *
+ * The comparison HISTORY is not stored here: the browser keeps it in its own
+ * localStorage after it receives this response.
  *
  * It IMPLEMENTS the HttpHandler interface, so it must provide the handle() method.
  */
@@ -57,14 +57,6 @@ public class CompareHandler implements HttpHandler {
             String reportName = ReportWriter.createReportName() + "_" + requestNumber;
             ReportWriter.saveTextReport(reportText, reportName);
             ReportWriter.saveCsvReport(results, reportName);
-
-            // Remember this comparison in the history file.
-            // If that fails, the user still gets the results, so we only log it.
-            try {
-                HistoryManager.addEntry(HistoryEntry.fromComparison(reportName, documents, results));
-            } catch (IOException e) {
-                System.out.println("[request " + requestNumber + "] could not save history: " + e.getMessage());
-            }
 
             String json = JsonBuilder.buildCompareResponse(documents, results, matrix, reportName, reportText);
             HttpUtil.sendJson(exchange, 200, json);
