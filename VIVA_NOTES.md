@@ -15,12 +15,12 @@
 ```
  ┌────────────────────────────┐        HTTP (localhost:8080)        ┌──────────────────────────────┐
  │  FRONTEND (browser)        │  POST /api/compare  (documents) ──► │  BACKEND (Java)              │
- │  index.html  - layout      │ ◄── JSON (scores, phrases, matrix)  │  server/  PlagiarismServer   │
- │  style.css   - design      │  GET /api/download  (report file)   │           + 4 handlers       │
- │  script.js   - logic       │  GET /api/history   (past results)  │  core/    the algorithms     │
- └────────────────────────────┘                                     │  report/  report files       │
-                                                                    │  history/ history.csv        │
-                                                                    └──────────────────────────────┘
+ │  5 pages (.html)           │ ◄── JSON (scores, phrases, matrix)  │  server/  PlagiarismServer   │
+ │  style.css   - design      │  GET /api/download  (report file)   │           + 3 handlers       │
+ │  script.js   - pages       │                                     │  core/    the algorithms     │
+ │  shared/core.js - logic    │                                     │  report/  report files       │
+ │  localStorage - HISTORY    │                                     └──────────────────────────────┘
+ └────────────────────────────┘
 ```
 
 **The browser only collects documents and shows results. All calculations happen in Java.**
@@ -40,8 +40,9 @@
    - result stored in a `ComparisonResult` object; list sorted highest first
 6. `buildSimilarityMatrix()` → `double[][]` table.
 7. `ReportGenerator` builds the text report; `ReportWriter` saves `.txt` and `.csv` files.
-8. `HistoryManager` appends one line to `reports/history.csv`.
-9. `JsonBuilder` converts everything to JSON → sent back → `script.js` draws the page.
+8. `JsonBuilder` converts everything to JSON → sent back → the browser draws the Results page.
+9. The browser (`shared/core.js`) adds a short summary of the check to its **history in `localStorage`**.
+   Java stores no history at all.
 
 ## 4. Package and class guide
 
@@ -58,12 +59,9 @@
 | `core` | `PlagiarismChecker` | Compares all pairs, builds the matrix |
 | `report` | `ReportGenerator` | Builds the text report (StringBuilder, Streams) |
 | `report` | `ReportWriter` | Saves `.txt` / `.csv` files |
-| `history` | `HistoryEntry` | One line of history, CSV save/load |
-| `history` | `HistoryManager` | Reads/writes `history.csv` (synchronized) |
 | `server` | `PlagiarismServer` | `main()`, starts server, thread pool, routes |
 | `server` | `CompareHandler` | `POST /api/compare` |
 | `server` | `DownloadHandler` | `GET /api/download` (safe file names only) |
-| `server` | `HistoryHandler` | `GET /api/history` |
 | `server` | `StaticFileHandler` | Sends the web page and sample files |
 | `server` | `RequestParser` | Splits the uploaded text into documents |
 | `server` | `JsonBuilder` | Java objects → JSON text |
@@ -105,12 +103,11 @@ order (including small words) is what proves copying.
 
 | Topic | Where |
 |---|---|
-| Classes, objects, constructors, `this` | `Document`, `ComparisonResult`, `HistoryEntry` |
+| Classes, objects, constructors, `this` | `Document`, `ComparisonResult` |
 | Encapsulation (private fields + getters) | all model classes |
 | `static` methods, `static final` constants | all utility classes (`TextNormalizer`, …) |
 | **Static block** | `TextNormalizer` fills the stop-word set once |
 | Private constructor (utility class) | `TextNormalizer`, `PhraseFinder`, … |
-| Static factory method | `HistoryEntry.fromComparison()`, `fromCsvLine()` |
 | Interfaces, `implements`, `@Override` | every handler `implements HttpHandler` |
 | Functional interface + lambda | `RiskyAction` in tests, comparators |
 | `toString()` override | `Document`, `ComparisonResult` |
@@ -122,20 +119,19 @@ order (including small words) is what proves copying.
 | Custom checked exception | `InvalidDocumentException` |
 | `try`/`catch`/`finally`, multi-catch, `throw`/`throws` | `DocumentReader`, `CompareHandler`, `Stage3Demo` |
 | try-with-resources | every file read/write |
-| Unchecked exceptions | `IllegalArgumentException`, `NumberFormatException` in `HistoryEntry` |
+| Unchecked exceptions | `NumberFormatException` when reading the port in `PlagiarismServer` |
 | Character streams | `FileReader`, `BufferedReader`, `FileWriter`, `BufferedWriter` |
 | Byte streams | `FileInputStream`, `InputStream`, `OutputStream` (server) |
-| CSV read/write + collections | `ReportWriter`, `HistoryManager` |
+| CSV write + collections | `ReportWriter` |
 | `ArrayList`, `HashMap`, `TreeMap` | everywhere |
 | `HashSet`, `LinkedHashSet` | stop words, n-grams, phrases, Jaccard |
 | `retainAll` / `addAll` (set intersection / union) | `SimilarityCalculator.jaccardSimilarity` |
 | Comparator and sorting | `topWords`, `findCommonWords`, `compareAll` |
-| `Collections.reverse`, `subList` | `HistoryManager.loadRecent` |
 | Lambdas, method references | comparators, `ComparisonResult::getOverallSimilarity` |
 | Stream API: `filter`, `map`, `mapToDouble`, `average`, `count`, `limit`, `collect` | `ReportGenerator`, `JsonBuilder` |
 | Multithreading (thread pool) | `PlagiarismServer` uses 4 threads |
-| `synchronized`, race condition | `nextRequestNumber()`, `HistoryManager` |
-| Testing / test evidence | `PlagiarismTests` (36 checks) |
+| `synchronized`, race condition | `nextRequestNumber()` |
+| Testing / test evidence | `PlagiarismTests` (35 checks) |
 
 ## 7. Likely viva questions and answers
 
@@ -175,7 +171,6 @@ A: It uses a thread pool of 4 threads (`Executors.newFixedThreadPool(4)`), so 4 
 A: When two threads change shared data at the same time and the result depends on timing.
 `requestCounter++` is really read → add → write, so two threads could get the same number.
 I made `nextRequestNumber()` `synchronized`, so only one thread can run it at a time.
-`HistoryManager` methods are also `synchronized`, so two threads never write to `history.csv` together.
 
 **Q: What is JSON and why did you use it?**
 A: A text format for data that JavaScript understands directly: `{ }` for objects, `[ ]` for arrays.
@@ -189,21 +184,29 @@ Request bodies are limited to 5 MB, and the page escapes HTML so document text c
 **Q: What are the limitations?**
 A: It only detects copying in the same language, word by word. It cannot detect synonyms
 ("big" vs "large") or meaning-level paraphrasing, and it only accepts `.txt` files.
-Possible improvements: stemming ("running" → "run"), synonym lists, PDF/DOCX support, and a database (JDBC) for history.
+Possible improvements: stemming ("running" → "run"), synonym lists, PDF/DOCX support, and syncing the browser history across devices (today it lives in one browser's `localStorage`).
 
 **Q: How did you test it?**
-A: `PlagiarismTests` has 36 automated checks: normalization, counting, cosine/Jaccard with known
+A: `PlagiarismTests` has 35 automated checks: normalization, counting, cosine/Jaccard with known
 answers (e.g. Jaccard {a,b,c} vs {b,c,d} = 50 %), phrase detection, pair counting, the matrix,
-validation errors, JSON escaping and history save/load. Run `run-tests.bat`; it prints PASS/FAIL.
+validation errors and JSON escaping. Run `run-tests.bat`; it prints PASS/FAIL.
 
 ## 8. Demo script for the viva (about 3 minutes)
 
-1. Run `run-tests.bat` → show **36 passed**.
+1. Run `run-tests.bat` → show **35 passed**.
 2. Run `run-server.bat` → open http://localhost:8080.
 3. Click **Load sample documents** → **Compare**.
 4. Show the summary, the matrix (original vs copied is red), and the pair card for original vs copied.
 5. Click **Highlight copied text** → show the copied phrases marked in both documents.
 6. Drag in the two files from `test-docs/` → Compare → **MODERATE** (partly copied, partly rewritten).
 7. Download the `.txt` report and open the `.csv` in Excel.
-8. Scroll to **Recent comparisons** → explain that `history.csv` keeps it after a restart.
+8. Open the **History** page → explain it is saved in the browser's `localStorage` (DevTools → Application →
+   Local Storage → key `pd.history`), so it survives closing the tab; the Java server stores no history.
 9. Open `CompareHandler.java` and walk through the 5 steps of a request.
+
+**Q: Where is the comparison history stored?**
+A: Only in the browser, in `localStorage` under the key `pd.history` (newest first, max 50 entries).
+After `/api/compare` answers, `shared/core.js` saves a short summary: date, report name, document names,
+most similar pair, highest % and verdict. `localStorage` survives closing the tab and restarting the PC,
+unlike `sessionStorage` (which we use only to carry the current documents between pages).
+Each browser has its own history; the Java server keeps none. The History page can clear it.
