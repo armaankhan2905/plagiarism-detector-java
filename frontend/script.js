@@ -1,5 +1,5 @@
 /* ============================================================
-   COPYSCOPE - the website (all five pages)
+   TEXTTRACE - the website (all five pages)
 
    Every page has the same <body data-page="..."> shell. This file builds
    the header, the page content and the footer, then connects the buttons.
@@ -33,7 +33,7 @@
     return `
       <div class="nav-wrap">
         <header class="nav">
-          <a class="brand" href="index.html"><span class="brand-ic">${ICON.logo}</span>Copyscope<span class="dot">.</span></a>
+          <a class="brand" href="index.html"><span class="brand-ic">${ICON.logo}</span>TextTrace<span class="dot">.</span></a>
           <nav id="menu">${NAV.map(([href, id, label]) => `<a href="${href}" class="${id === page ? "on" : ""}">${label}</a>`).join("")}</nav>
           <div class="nav-right">
             <a class="btn orange sm" href="compare.html">Start checking</a>
@@ -48,14 +48,14 @@
       <footer class="foot">
         <div class="foot-in">
           <div class="foot-brand">
-            <a class="brand" href="index.html"><span class="brand-ic">${ICON.logo}</span>Copyscope<span class="dot">.</span></a>
+            <a class="brand" href="index.html"><span class="brand-ic">${ICON.logo}</span>TextTrace<span class="dot">.</span></a>
             <p>Plagiarism detection using word frequency. A Java project.</p>
           </div>
           <div><h4>Product</h4><a href="compare.html">Compare documents</a><a href="results.html">Latest results</a><a href="history.html">History</a></div>
           <div><h4>Learn</h4><a href="method.html">How it works</a><a href="method.html#scale">Verdict scale</a><a href="method.html#measures">The three measures</a></div>
           <div><h4>Limits</h4><span>2 – 10 documents</span><span>.txt files, 1 MB each</span><span>Phrases of 4+ words</span></div>
         </div>
-        <div class="foot-base"><span>© Copyscope · Java project</span></div>
+        <div class="foot-base"><span>© TextTrace · Java project</span></div>
       </footer>`;
   }
 
