@@ -47,17 +47,22 @@ public class PlagiarismServer {
 
     public static void main(String[] args) {
         int port = DEFAULT_PORT;
-        if (args.length > 0) {
+        // Cloud hosts (e.g. Render) tell the program which port to use in the PORT environment variable
+        String envPort = System.getenv("PORT");
+        String portText = args.length > 0 ? args[0] : envPort;
+        if (portText != null) {
             try {
-                port = Integer.parseInt(args[0]); // wrapper class method: String -> int
+                port = Integer.parseInt(portText); // wrapper class method: String -> int
             } catch (NumberFormatException e) {
-                System.out.println("Invalid port '" + args[0] + "', using " + DEFAULT_PORT);
+                System.out.println("Invalid port '" + portText + "', using " + DEFAULT_PORT);
             }
         }
 
         try {
-            // "localhost" -> only this computer can open the site
-            HttpServer server = HttpServer.create(new InetSocketAddress("localhost", port), 0);
+            // On your own computer: "localhost" -> only this computer can open the site.
+            // On a cloud host (PORT is set): "0.0.0.0" -> accept connections from outside.
+            String host = envPort != null ? "0.0.0.0" : "localhost";
+            HttpServer server = HttpServer.create(new InetSocketAddress(host, port), 0);
 
             server.createContext("/", new StaticFileHandler("frontend", ""));
             server.createContext("/samples", new StaticFileHandler("sample-docs", "/samples"));
