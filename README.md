@@ -11,7 +11,7 @@ generates a comparison report. It has a web page frontend and a Java backend
 |---|---|
 | Start the web app | Double-click `run-server.bat`, then open **http://localhost:8080** |
 | Run the automated tests | Double-click `run-tests.bat` (36 tests) |
-| Console versions | `run-stage1.bat`, `run-stage2.bat`, `run-stage3.bat` |
+| Console versions | Run `compile.bat`, then `java -cp out plagiarism.app.Stage1Demo` (or `Stage2Demo`, `Stage3Demo`) |
 
 Needs Java 17 or newer (tested with JDK 26). Stop the server with `Ctrl + C`.
 To use another port: `run-server.bat 8081`.
