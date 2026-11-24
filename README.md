@@ -16,9 +16,6 @@ generates a comparison report. It has a web page frontend and a Java backend
 Needs Java 17 or newer (tested with JDK 26). Stop the server with `Ctrl + C`.
 To use another port: `run-server.bat 8081`.
 
-See **[VIVA_NOTES.md](VIVA_NOTES.md)** for the architecture, data flow, formulas,
-syllabus mapping, likely viva questions and a demo script.
-
 ## Features
 
 - Upload `.txt` files (drag and drop or browse), paste text, or load sample documents (2 to 10 documents)
