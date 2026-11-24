@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": "frontend",
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://texttrace-api.onrender.com/api/:path*" },
     { "source": "/samples/:path*", "destination": "https://texttrace-api.onrender.com/samples/:path*" }
