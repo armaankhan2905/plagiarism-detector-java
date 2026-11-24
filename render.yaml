@@ -1,0 +1,9 @@
+# Render Blueprint: the Java backend as a Docker web service (free plan).
+services:
+  - type: web
+    name: texttrace-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    autoDeploy: true
